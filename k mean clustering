@@ -1,0 +1,30 @@
+library(factoextra)
+library(cluster)
+library(NbClust)
+library(ggplot2)
+df = read.csv("Sales_Product_Details.csv
+")
+
+df$Product_Description <- as.numeric(as.factor(df$Product_Description))
+df$Product_Category <- as.numeric(as.factor(df$Product_Category))
+df$Product_Line<- as.numeric(as.factor(df$Product_Line))
+df$Raw_Material<- as.numeric(as.factor(df$Raw_Material))
+df$Region <- as.numeric(as.factor(df$Region))
+# Standardize the data
+df <- scale(df)
+head(df, nrow = 6)
+
+res.dist <- dist(df, method = "euclidean")
+as.matrix(res.dist)[1:6, 1:6]
+kmeans(df, centers=2, iter.max = 10, nstart = 25)
+kmeans(df, centers=3, iter.max = 10, nstart = 25)
+kmeans(df, centers=4, iter.max = 10, nstart = 25)
+kmeans(df, centers=5, iter.max = 10, nstart = 25)
+set.seed(123)
+km.res <- kmeans(df, 4, nstart = 25)
+# Print the results
+print(km.res)
+
+
+fviz_nbclust(df, kmeans, method = "wss")+ geom_vline(xintercept = 4, linetype = 2)
+
