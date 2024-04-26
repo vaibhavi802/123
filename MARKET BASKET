@@ -1,0 +1,31 @@
+library(arules) 
+library(arulesViz)
+library(rattle)
+library(dplyr)
+library(ggplot2)
+df=read.csv("groceries.csv", header= FALSE)
+df
+str(df)
+# Plot the absolute item frequency plot
+itemFrequencyPlot(df,type = "absolute",topN = 10,horiz = TRUE,main = 'Absolute item frequency')
+# Setting the plot configuration option
+par(mfrow=c(2,1))
+# Plot the relative and absolute item frequency plot
+itemFrequencyPlot(df,type = "relative",topN = 10,horiz = TRUE,main = 'Relative item frequency')
+# Plot the least popular items
+barplot(sort(table(unlist(LIST(df))))[1:10],horiz = TRUE,las = 1,main = 'Least popular items')
+# Inspect the first few transactions
+inspect(head(groceries_data))
+#using Apriori Algorithm
+itemsets <- apriori(groceries_data,
+parameter = list(support = 0.4, target = 'frequent'))
+str(itemsets)
+# Check the structure of itemsets
+rules = apriori(groceries_data , parameter = list(support=0.001 , confidence = 0.5))
+summary(rules)
+inspect(head(rules))
+sorted_rules = sort(rules , by= 'confidence' , decreasing = TRUE)
+top_10_rules = sorted_rules[1:10]
+inspect(top_10_rules)
+plot(top_10_rules, method = "graph", control = list(type = "items"))
+plot(top_3_rules, method = "graph", control = list(type = "items"))
